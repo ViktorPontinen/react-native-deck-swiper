@@ -72,8 +72,11 @@ class Swiper extends Component {
     this.state.pan.x.addListener(value => (this._animatedValueX = value.value))
     this.state.pan.y.addListener(value => (this._animatedValueY = value.value))
 
-    this.initializeCardStyle()
     this.initializePanResponder()
+  }
+  
+  componentDidMount() {
+     this.initializeCardStyle()
   }
 
   shouldComponentUpdate = (nextProps, nextState) => {
@@ -281,7 +284,13 @@ class Swiper extends Component {
       this.resetTopCard()
     }
 
-    if (!this.state.slideGesture) {
+    let slideGesture = false
+    const { onTapCardDeadZone } = this.props
+    if (this._animatedValueX < -onTapCardDeadZone || this._animatedValueX > onTapCardDeadZone || this._animatedValueY < -onTapCardDeadZone || this._animatedValueY > onTapCardDeadZone) {
+      slideGesture = true
+    }
+
+    if (!slideGesture) {
       this.props.onTapCard(this.state.firstCardIndex)
     }
 
